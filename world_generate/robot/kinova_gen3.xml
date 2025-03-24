@@ -1,0 +1,122 @@
+<?xml version="1.0"?>
+<mujoco>
+  <!-- 编译器选项 -->
+  <compiler angle="radian" meshdir="../../robot/kinova_mesh"/>
+
+  <!-- 全局物理参数 -->
+  <option timestep="0.001" iterations="50" tolerance="1e-8">
+    <flag warmstart="enable"/>
+  </option>
+
+  <!-- 资产定义 -->
+  <asset>
+    <mesh name="base_mesh" file="base_link.STL"/>
+    <mesh name="shoulder_mesh" file="shoulder_link.STL"/>
+    <mesh name="halfarm1_mesh" file="half_arm_1_link.STL"/>
+    <mesh name="halfarm2_mesh" file="half_arm_2_link.STL"/>
+    <mesh name="forearm_mesh" file="forearm_link.STL"/>
+    <mesh name="wrist1_mesh" file="spherical_wrist_1_link.STL"/>
+    <mesh name="wrist2_mesh" file="spherical_wrist_2_link.STL"/>
+    <mesh name="bracelet_mesh" file="bracelet_with_vision_link.STL"/>
+
+    <material name="robot_mat" rgba="0.75 0.75 0.75 1"/>
+  </asset>
+
+  <!-- 世界环境 -->
+  <worldbody>
+    <!-- 基座 -->
+    <body name="base_link" pos="0.9 0 0.95">
+      <inertial pos="-0.000648 -0.000166 0.084487"
+                mass="1.697"
+                diaginertia="0.004622 0.004495 0.002079"/>
+
+      <geom type="mesh" mesh="base_mesh" material="robot_mat"
+           contype="1" conaffinity="1" group="0"/>
+
+      <!-- 肩关节 -->
+      <body name="Shoulder_Link" pos="0 0 0.15643" euler="3.1416 0 0">
+        <joint name="Actuator1" type="hinge" axis="0 0 1" limited="false"/>
+        <inertial pos="-2.3E-05 -0.010364 -0.07336"
+                  mass="1.3773"
+                  diaginertia="0.00457 0.004831 0.001409"/>
+        <geom type="mesh" mesh="shoulder_mesh" material="robot_mat"/>
+
+        <!-- 第二关节 -->
+        <body name="HalfArm1_Link" pos="0 0.005375 -0.12838" euler="1.5708 0 0">
+          <joint name="Actuator2" type="hinge" axis="0 0 1" range="-2.41 2.41"/>
+          <inertial pos="-4.4E-05 -0.09958 -0.013278"
+                    mass="1.1636"
+                    diaginertia="0.011088 0.001072 0.011255"/>
+          <geom type="mesh" mesh="halfarm1_mesh" material="robot_mat"/>
+
+          <!-- 第三关节 -->
+          <body name="HalfArm2_Link" pos="0 -0.21038 -0.006375" euler="-1.5708 0 0">
+            <joint name="Actuator3" type="hinge" axis="0 0 1" limited="false"/>
+            <inertial pos="-4.4E-05 -0.006641 -0.117892"
+                      mass="1.1636"
+                      diaginertia="0.010932 0.011127 0.001043"/>
+            <geom type="mesh" mesh="halfarm2_mesh" material="robot_mat"/>
+
+            <!-- 第四关节 -->
+            <body name="ForeArm_Link" pos="0 0.006375 -0.21038" euler="1.5708 0 0">
+              <joint name="Actuator4" type="hinge" axis="0 0 1" range="-2.66 2.66"/>
+              <inertial pos="-1.8E-05 -0.075478 -0.015006"
+                        mass="0.9302"
+                        diaginertia="0.008147 0.000631 0.008316"/>
+              <geom type="mesh" mesh="forearm_mesh" material="robot_mat"/>
+
+              <!-- 第五关节 -->
+              <body name="SphericalWrist1_Link" pos="0 -0.20843 -0.006375" euler="-1.5708 0 0">
+                <joint name="Actuator5" type="hinge" axis="0 0 1" limited="false"/>
+                <inertial pos="1E-06 -0.009432 -0.063883"
+                          mass="0.6781"
+                          diaginertia="0.001596 0.001607 0.000399"/>
+                <geom type="mesh" mesh="wrist1_mesh" material="robot_mat"/>
+
+                <!-- 第六关节 -->
+                <body name="SphericalWrist2_Link" pos="0 0.000175 -0.10593" euler="1.5708 0 0">
+                  <joint name="Actuator6" type="hinge" axis="0 0 1" range="-2.23 2.23"/>
+                  <inertial pos="1E-06 -0.045483 -0.00965"
+                            mass="0.6781"
+                            diaginertia="0.001641 0.00041 0.001641"/>
+                  <geom type="mesh" mesh="wrist2_mesh" material="robot_mat"/>
+
+                  <!-- 第七关节 -->
+                  <body name="Bracelet_Link" pos="0 -0.10593 -0.000175" euler="-1.5708 0 0">
+                    <joint name="Actuator7" type="hinge" axis="0 0 1" limited="false"/>
+                    <inertial pos="-0.000281 -0.011402 -0.029798"
+                              mass="0.5006"
+                              diaginertia="0.000587 0.000369 0.000609"/>
+                    <geom type="mesh" mesh="bracelet_mesh" material="robot_mat"/>
+
+                    <!-- 末端执行器 -->
+                    <body name="EndEffector_Link" pos="0 0 -0.061525" euler="3.1416 0 0">
+                    </body>
+                  </body>
+                </body>
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+    </body>
+  </worldbody>
+
+  <!-- 执行器配置 -->
+  <actuator>
+    <motor name="motor1" joint="Actuator1" gear="39"/>
+    <motor name="motor2" joint="Actuator2" gear="39"/>
+    <motor name="motor3" joint="Actuator3" gear="39"/>
+    <motor name="motor4" joint="Actuator4" gear="39"/>
+    <motor name="motor5" joint="Actuator5" gear="9"/>
+    <motor name="motor6" joint="Actuator6" gear="9"/>
+    <motor name="motor7" joint="Actuator7" gear="9"/>
+  </actuator>
+
+  <!-- 可视化配置 -->
+  <visual>
+    <global offwidth="800" offheight="600"/>
+    <quality shadowsize="2048"/>
+    <map znear="0.01"/>
+  </visual>
+</mujoco>

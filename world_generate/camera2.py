@@ -1,0 +1,86 @@
+import os
+import random
+import argparse
+import cv2
+import mujoco_py
+from mujoco_py import GlfwContext
+
+def find_xml_files(root_folder):
+    """
+    在给定的 root_folder 下，查找所有后缀为 .xml 的文件并返回它们的完整路径列表。
+    """
+    xml_paths = []
+    for foldername, _, filenames in os.walk(root_folder):
+        for filename in filenames:
+            if filename.endswith(".xml"):
+                full_path = os.path.join(foldername, filename)
+                xml_paths.append(full_path)
+    return xml_paths
+
+def run_simulation(xml_path):
+    GlfwContext(offscreen=True)
+
+    model = mujoco_py.load_model_from_path(xml_path)
+    sim = mujoco_py.MjSim(model)
+
+    camera_names = ["front_cam", "side_cam", "top_cam"]
+    current = 0
+    width, height = 640, 480
+
+    print(f"使用摄像机视角：{camera_names[current]}（按 a/d 切换，ESC 退出）")
+
+    for _ in range(1000):
+        sim.step()
+
+        cam_name = camera_names[current]
+        img = sim.render(width, height, camera_name=cam_name)
+        img_bgr = img[..., ::-1]
+        cv2.imshow("Camera View", img_bgr)
+
+        key = cv2.waitKey(1) & 0xFF
+        if key == 27:  # ESC
+            break
+        elif key == ord('a'):
+            current = (current - 1) % len(camera_names)
+        elif key == ord('d'):
+            current = (current + 1) % len(camera_names)
+
+    cv2.destroyAllWindows()
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="使用 mujoco_py 显示摄像头图像，可指定或随机选择一个 XML 模型文件。"
+    )
+    parser.add_argument(
+        "--xml",
+        type=str,
+        default=None,
+        help="要运行的xml文件路径（相对于world目录或绝对路径）。若不指定则随机运行。"
+    )
+    args = parser.parse_args()
+
+    world_folder = os.path.join(os.path.dirname(__file__), "world")
+    all_xml_files = find_xml_files(world_folder)
+
+    if not all_xml_files:
+        print("在 world 文件夹下未找到任何 .xml 文件，请检查路径。")
+        return
+
+    chosen_xml = None
+    if args.xml is not None:
+        possible_path = os.path.join(world_folder, args.xml)
+        if os.path.isfile(args.xml):
+            chosen_xml = os.path.abspath(args.xml)
+        elif os.path.isfile(possible_path):
+            chosen_xml = os.path.abspath(possible_path)
+        else:
+            print(f"无法找到指定的文件: {args.xml}")
+            return
+    else:
+        chosen_xml = random.choice(all_xml_files)
+
+    print(f"即将运行模型: {chosen_xml}")
+    run_simulation(chosen_xml)
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,78 @@
+<mujoco model="gen3_arm">
+  <compiler angle="radian" meshdir="../../robot/mesh/"/>
+  <option timestep="0.001" integrator="RK4"/>
+
+  <asset>
+    <mesh name="base_link_mesh" file="base_link.STL"/>
+    <mesh name="shoulder_link_mesh" file="shoulder_link.STL"/>
+    <mesh name="bicep_link_mesh" file="bicep_link.STL"/>
+    <mesh name="forearm_link_mesh" file="forearm_link.STL"/>
+    <mesh name="spherical_wrist_1_link_mesh" file="spherical_wrist_1_link.STL"/>
+    <mesh name="spherical_wrist_2_link_mesh" file="spherical_wrist_2_link.STL"/>
+    <mesh name="bracelet_link_mesh" file="bracelet_with_vision_link.STL"/>
+  </asset>
+
+  <worldbody>
+    <!-- Base Link -->
+    <body name="base_link" pos="0.9 0 0.95">
+      <geom type="mesh" mesh="base_link_mesh" rgba="0.75294 0.75294 0.75294 1"/>
+      <inertial pos="-0.000648 -0.000166 0.084487" mass="1.697" diaginertia="0.004622 0.004495 0.002079"/>
+
+      <!-- Shoulder Link -->
+      <body name="shoulder_link" pos="0 0 0.15643">
+        <joint name="joint_1" type="hinge" axis="0 0 1" limited="true" range="-3.1416 3.1416"/>
+        <geom type="mesh" mesh="shoulder_link_mesh" rgba="0.75294 0.75294 0.75294 1"/>
+        <inertial pos="-2.3E-05 -0.010364 -0.07336" mass="1.377" diaginertia="0.00457 0.004831 0.001409"/>
+
+        <!-- Bicep Link -->
+        <body name="bicep_link" pos="0 0.005375 -0.12838">
+          <joint name="joint_2" type="hinge" axis="0 0 1" limited="true" range="-2.41 2.41"/>
+          <geom type="mesh" mesh="bicep_link_mesh" rgba="0.75294 0.75294 0.75294 1"/>
+          <inertial pos="3.5E-05 -0.208207 -0.01889" mass="1.262" diaginertia="0.046752 0.00085 0.047188"/>
+
+          <!-- Forearm Link -->
+          <body name="forearm_link" pos="0 -0.41 0">
+            <joint name="joint_3" type="hinge" axis="0 0 1" limited="true" range="-2.66 2.66"/>
+            <geom type="mesh" mesh="forearm_link_mesh" rgba="0.75294 0.75294 0.75294 1"/>
+            <inertial pos="1.8E-05 0.076168 -0.01397" mass="0.93" diaginertia="0.008292 0.000628 0.008464"/>
+
+            <!-- Spherical Wrist 1 Link -->
+            <body name="spherical_wrist_1_link" pos="0 0.20843 -0.006375">
+              <joint name="joint_4" type="hinge" axis="0 0 1" limited="true" range="-3.1416 3.1416"/>
+              <geom type="mesh" mesh="spherical_wrist_1_link_mesh" rgba="0.75294 0.75294 0.75294 1"/>
+              <inertial pos="-1E-06 0.008486 -0.062937" mass="0.6781" diaginertia="0.001645 0.001666 0.000389"/>
+
+              <!-- Spherical Wrist 2 Link -->
+              <body name="spherical_wrist_2_link" pos="0 -0.00017505 -0.10593">
+                <joint name="joint_5" type="hinge" axis="0 0 1" limited="true" range="-2.23 2.23"/>
+                <geom type="mesh" mesh="spherical_wrist_2_link_mesh" rgba="0.75294 0.75294 0.75294 1"/>
+                <inertial pos="-1E-06 0.046429 -0.008704" mass="0.678" diaginertia="0.001685 0.0004 0.001696"/>
+
+                <!-- Bracelet Link -->
+                <body name="bracelet_link" pos="0 0.10593 -0.00017505">
+                  <joint name="joint_6" type="hinge" axis="0 0 1" limited="true" range="-3.1416 3.1416"/>
+                  <geom type="mesh" mesh="bracelet_link_mesh" rgba="0.75294 0.75294 0.75294 1"/>
+                  <inertial pos="0.000281 0.011402 -0.029798" mass="0.5" diaginertia="0.000587 0.000369 0.000609"/>
+
+                  <!-- End Effector Link -->
+                  <body name="end_effector_link" pos="0 0 -0.061525">
+                      <!-- 不需要 joint 标签 -->
+                  </body>
+                </body>
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+    </body>
+  </worldbody>
+
+<!--  <actuator>-->
+<!--    <motor joint="joint_1" gear="1"/>-->
+<!--    <motor joint="joint_2" gear="1"/>-->
+<!--    <motor joint="joint_3" gear="1"/>-->
+<!--    <motor joint="joint_4" gear="1"/>-->
+<!--    <motor joint="joint_5" gear="1"/>-->
+<!--    <motor joint="joint_6" gear="1"/>-->
+<!--  </actuator>-->
+</mujoco>

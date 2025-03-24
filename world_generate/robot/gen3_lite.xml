@@ -1,0 +1,183 @@
+<?xml version="1.0"?>
+<mujoco>
+  <!-- 编译器设置 -->
+  <compiler angle="radian" meshdir="../../robot/gen3_lite_mesh"/>
+
+  <!-- 物理引擎参数 -->
+  <option timestep="0.002" integrator="RK4">
+    <flag contact="disable"/>
+  </option>
+
+  <!-- 资产定义 -->
+  <asset>
+    <!-- 网格资源 -->
+    <mesh name="base_mesh" file="base_link.STL"/>
+    <mesh name="shoulder_mesh" file="shoulder_link.STL"/>
+    <mesh name="arm_mesh" file="arm_link.STL"/>
+    <mesh name="forearm_mesh" file="forearm_link.STL"/>
+    <mesh name="lower_wrist_mesh" file="lower_wrist_link.STL"/>
+    <mesh name="upper_wrist_mesh" file="upper_wrist_link.STL"/>
+
+    <mesh name="gripper_frame" file="gripper_base_link.STL" />
+    <mesh name="right_finger_prox" file="right_finger_prox_link.STL" />
+    <mesh name="right_finger_dist" file="right_finger_dist_link.STL" />
+    <mesh name="left_finger_prox" file="left_finger_prox_link.STL" />
+    <mesh name="left_finger_dist" file="left_finger_dist_link.STL" />
+
+    <!-- 材质定义 -->
+    <material name="robot_mat" rgba="0.8 0.8 0.8 1"/>
+  </asset>
+
+  <!-- 世界结构 -->
+  <worldbody>
+    <!-- 基座 -->
+    <body name="BASE" pos="0.9 0 0.95">
+      <inertial pos="0.00244324 0.00015573 0.08616742"
+                mass="1.14608471"
+                diaginertia="0.00335854 0.003311 0.00077158"/> <!-- 仅保留对角元素 -->
+
+      <geom type="mesh" mesh="base_mesh" material="robot_mat"
+            contype="1" conaffinity="1"/>
+
+      <!-- 关节J0 -->
+      <body name="SHOULDER" pos="0 0 0.12825">
+        <joint name="J0" type="hinge" axis="0 0 1" range="-2.76 2.76" damping="0"/>
+        <inertial pos="2.477E-05 0.02213531 0.09937686"
+                  mass="0.95974404"
+                  diaginertia="0.00165947 0.00140355 0.00089493"/> <!-- ixx iyy izz -->
+        <geom type="mesh" mesh="shoulder_mesh" material="robot_mat"/>
+
+        <!-- 关节J1 -->
+        <body name="ARM" pos="0 -0.03 0.115" euler="1.5708 0 0">
+          <joint name="J1" type="hinge" axis="0 0 1" range="-2.76 2.76" damping="0"/>
+          <inertial pos="0.02998299 0.21154808 0.0453031"
+                    mass="1.17756164"
+                    diaginertia="0.01149277 0.00102851 0.01133492"/>
+          <geom type="mesh" mesh="arm_mesh" material="robot_mat"/>
+
+          <!-- 关节J2 -->
+          <body name="FOREARM" pos="0 0.28 0" euler="-3.1416 0 0">
+            <joint name="J2" type="hinge" axis="0 0 1" range="-2.76 2.76" damping="0"/>
+            <inertial pos="0.0301559 0.09502206 0.0073555"
+                      mass="0.59767669"
+                      diaginertia="0.00163256 0.00029798 0.00169091"/>
+            <geom type="mesh" mesh="forearm_mesh" material="robot_mat"/>
+
+            <!-- 关节J3 -->
+            <body name="LOWER_WRIST" pos="0 -0.14 0.02" euler="1.5708 0 0">
+              <joint name="J3" type="hinge" axis="0 0 1" range="-2.67 2.67" damping="0"/>
+              <inertial pos="0.00575149 0.01000443 0.08719207"
+                        mass="0.52693412"
+                        diaginertia="0.00069098 0.00078519 0.00034115"/>
+              <geom type="mesh" mesh="lower_wrist_mesh" material="robot_mat"/>
+
+              <!-- 关节J4 -->
+              <body name="UPPER_WRIST" pos="0.0285 0 0.105" euler="0 1.5708 0">
+                <joint name="J4" type="hinge" axis="0 0 1" range="-2.67 2.67" damping="0"/>
+                <inertial pos="0.08056517 0.00980409 0.01872799"
+                          mass="0.58097325"
+                          diaginertia="0.00021268 0.00106371 0.00108465"/>
+                <geom type="mesh" mesh="upper_wrist_mesh" material="robot_mat"/>
+
+                <!-- 关节J5 -->
+                <body name="END_EFFECTOR" pos="-0.105 0 0.0285" euler="0 -1.5708 0">
+                  <joint name="J5" type="hinge" axis="0 0 1" range="-2.67 2.67" damping="0"/>
+                  <inertial pos="0 0 0" mass="0.1" diaginertia="0.0001 0.0001 0.0001"/>
+
+                  <!-- 末端固定件 -->
+                  <body name="DUMMY" pos="0 0 0">
+
+                    <body name="gripper_frame" pos="0 0 0">
+                      <inertial pos="4.03e-06 1.08e-05 0.04139748" mass="0.1395"
+                                diaginertia="0.00011614 0.00010327 9.707e-05" />
+                      <geom type="mesh" mesh="gripper_frame" />
+
+                      <!-- Right Finger Proximal -->
+                      <body name="right_finger_prox" pos="0 -0.030501 0.070003">
+                        <joint name="right_bottom" type="hinge" axis="0 0 1" range="-0.09 0.96" />
+                        <inertial pos="0.020257 0.0063483 6.991e-05" mass="0.018385"
+                                  diaginertia="2.29e-06 4.56e-06 4.77e-06" />
+                        <geom type="mesh" mesh="right_finger_prox" />
+
+                        <!-- Right Finger Distal -->
+                        <body name="right_finger_dist" pos="-0.045636 0.020423 0">
+                          <joint name="right_tip" type="hinge" axis="0 0 1" range="-1.03 0.21" />
+                          <inertial pos="0.018488 0.0011091 0" mass="0.010748"
+                                    diaginertia="6.3e-07 1.83e-06 1.61e-06" />
+                          <geom type="mesh" mesh="right_finger_dist" />
+
+                          <site name="right_tip_sensor_site" pos="0 0 0" size="0.005" rgba="1 0 0 1"/>
+                        </body>
+                      </body>
+
+                      <!-- Left Finger Proximal -->
+                      <body name="left_finger_prox" pos="0 0.0305 0.070003">
+                        <joint name="left_bottom" type="hinge" axis="0 0 1" range="-0.96 0.09" />
+                        <inertial pos="0.020257 0.0063483 6.99e-05" mass="0.018385"
+                                  diaginertia="2.29e-06 4.56e-06 4.77e-06" />
+                        <geom type="mesh" mesh="left_finger_prox" />
+
+                        <!-- Left Finger Distal -->
+                        <body name="left_finger_dist" pos="-0.045636 -0.020423 6.9901e-05">
+                          <joint name="left_tip" type="hinge" axis="0 0 -1" range="-0.21 1.03" />
+                          <inertial pos="-0.018488 0.0011091 0" mass="0.010748"
+                                    diaginertia="6.3e-07 1.83e-06 1.61e-06" />
+                          <geom type="mesh" mesh="left_finger_dist" />
+
+                          <site name="left_tip_sensor_site" pos="0 0 0" size="0.005" rgba="0 0 1 1"/>
+                        </body>
+                      </body>
+                    </body>
+
+                  </body>
+                </body>
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+    </body>
+
+    <camera name="front_cam"
+          mode="fixed"
+          pos="4 0 1.3"
+          euler="-1.5708 1.5708 0"
+          fovy="45" />
+
+    <camera name="side_cam"
+          mode="fixed"
+          pos="4 -2.3 1.3"
+          euler="-1.5708 2.0944 0"
+          fovy="45" />
+
+    <camera name="top_cam"
+          mode="fixed"
+          pos="0 0 5"
+          euler="0 0 0"
+          fovy="45" />
+
+  </worldbody>
+
+  <!-- 执行器配置 -->
+  <actuator>
+    <motor name="J0_motor" joint="J0" gear="10" ctrllimited="true" ctrlrange="-2.76 2.76"/>
+    <motor name="J1_motor" joint="J1" gear="14" ctrllimited="true" ctrlrange="-2.76 2.76"/>
+    <motor name="J2_motor" joint="J2" gear="10" ctrllimited="true" ctrlrange="-2.76 2.76"/>
+    <motor name="J3_motor" joint="J3" gear="7" ctrllimited="true" ctrlrange="-2.67 2.67"/>
+    <motor name="J4_motor" joint="J4" gear="7" ctrllimited="true" ctrlrange="-2.67 2.67"/>
+    <motor name="J5_motor" joint="J5" gear="7" ctrllimited="true" ctrlrange="-2.67 2.67"/>
+
+    <motor name="right_bottom_motor" joint="right_bottom" gear="10" ctrllimited="true" ctrlrange="-0.09 0.96"/>
+    <motor name="right_tip_motor" joint="right_tip" gear="10" ctrllimited="true" ctrlrange="-1.03 0.21"/>
+    <motor name="left_bottom_motor" joint="left_bottom" gear="10" ctrllimited="true" ctrlrange="-0.96 0.09"/>
+    <motor name="left_tip_motor" joint="left_tip" gear="10" ctrllimited="true" ctrlrange="-0.21 1.03"/>
+
+  </actuator>
+
+  <sensor>
+    <force name="right_tip_force" site="right_tip_sensor_site"/>
+    <force name="left_tip_force" site="left_tip_sensor_site"/>
+  </sensor>
+
+
+</mujoco>

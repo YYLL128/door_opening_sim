@@ -1,0 +1,51 @@
+<mujoco model="L31K-GRIPPER">
+  <compiler angle="radian" coordinate="local" />
+  <option timestep="0.002" gravity="0 0 -9.81" />
+  <asset>
+    <mesh name="gripper_frame" file="meshes/GRIPPER_FRAME.STL" />
+    <mesh name="right_finger_prox" file="meshes/RIGHT_FINGER_PROX.STL" />
+    <mesh name="right_finger_dist" file="meshes/RIGHT_FINGER_DIST.STL" />
+    <mesh name="left_finger_prox" file="meshes/LEFT_FINGER_PROX.STL" />
+    <mesh name="left_finger_dist" file="meshes/LEFT_FINGER_DIST.STL" />
+  </asset>
+
+  <worldbody>
+    <body name="gripper_frame" pos="0 0 0">
+      <inertial pos="4.03e-06 1.08e-05 0.04139748" mass="0.1395"
+                diaginertia="0.00011614 0.00010327 9.707e-05" />
+      <geom type="mesh" mesh="gripper_frame" />
+
+      <!-- Right Finger Proximal -->
+      <body name="right_finger_prox" pos="0 -0.030501 0.070003">
+        <joint name="right_bottom" type="hinge" axis="0 0 1" range="-0.09 0.96" />
+        <inertial pos="0.020257 0.0063483 6.991e-05" mass="0.018385"
+                  diaginertia="2.29e-06 4.56e-06 4.77e-06" />
+        <geom type="mesh" mesh="right_finger_prox" />
+
+        <!-- Right Finger Distal -->
+        <body name="right_finger_dist" pos="-0.045636 0.020423 0">
+          <joint name="right_tip" type="hinge" axis="0 0 1" range="-1.03 0.21" />
+          <inertial pos="0.018488 0.0011091 0" mass="0.010748"
+                    diaginertia="6.3e-07 1.83e-06 1.61e-06" />
+          <geom type="mesh" mesh="right_finger_dist" />
+        </body>
+      </body>
+
+      <!-- Left Finger Proximal -->
+      <body name="left_finger_prox" pos="0 0.0305 0.070003">
+        <joint name="left_bottom" type="hinge" axis="0 0 1" range="-0.96 0.09" />
+        <inertial pos="0.020257 0.0063483 6.99e-05" mass="0.018385"
+                  diaginertia="2.29e-06 4.56e-06 4.77e-06" />
+        <geom type="mesh" mesh="left_finger_prox" />
+
+        <!-- Left Finger Distal -->
+        <body name="left_finger_dist" pos="-0.045636 -0.020423 6.9901e-05">
+          <joint name="left_tip" type="hinge" axis="0 0 -1" range="-0.21 1.03" />
+          <inertial pos="-0.018488 0.0011091 0" mass="0.010748"
+                    diaginertia="6.3e-07 1.83e-06 1.61e-06" />
+          <geom type="mesh" mesh="left_finger_dist" />
+        </body>
+      </body>
+    </body>
+  </worldbody>
+</mujoco>
