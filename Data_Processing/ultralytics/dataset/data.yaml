@@ -1,0 +1,8 @@
+# data.yaml - YOLOv8 数据集配置文件
+path: dataset  # 数据集的根目录，相对于 data.yaml 所在目录
+train: images/train  # 训练集图片路径，相对于 path
+val: images/val  # 验证集图片路径
+test: images/test  # （可选）测试集图片路径
+nc: 1  # 目标类别数量
+names: ["door_handle"]  # 类别名称
+
