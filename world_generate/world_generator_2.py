@@ -39,7 +39,7 @@ def main(dataset_file, args, knob_type):
     knob_parts_n = params_dict['model_count']  # 根据 info.json 读取门把手部件数量（多个零件组合成一个把手）
 
     # 固定使用 gen3.xml 作为机械臂的 include 文件
-    robot_include_file = "../../robot/gen3_lite.xml"
+    robot_include_file = "../../robot/kinova_gen3_gripper.xml"
 
     ###################### 随机化参数 ######################
     # 随机生成灯光属性
